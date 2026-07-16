@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title id="pageTitle">إنشاء حساب جديد - وكالة الدواحي للسفر والسياحة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-light lang-ar" id="pageBody">
+
+<div class="navbar">
+  <div class="brand" id="brandText">وكالة الدواحي ✦ <span id="subBrandText">للسفر والسياحة</span></div>
+  <div class="nav-links">
+    <a href="login.html" class="btn small" id="loginNavLabel">تسجيل الدخول</a>
+    <span class="nav-controls">
+      <button type="button" class="lang-btn" onclick="setLang('ar')">🇸🇦 عربي</button>
+      <button type="button" class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
+      <button type="button" class="theme-btn" onclick="setTheme('light')">☀️</button>
+      <button type="button" class="theme-btn" onclick="setTheme('dark')">🌙</button>
+    </span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="form-box card glow-form">
+    <h2 class="center" id="titleRegister">إنشاء حساب جديد</h2>
+    <p class="subtitle center" id="welcomeText">وكالة الدواحي للسفر والسياحة</p>
+    <div class="flash error" id="flashMsg" style="display:none"></div>
+    <form id="registerForm" onsubmit="return handleRegister(event)">
+      <label id="labelFullname">الاسم الثلاثي</label>
+      <input type="text" name="fullname" id="fullnameInput" placeholder="مثال: أحمد محمد علي" required>
+
+      <label id="labelPhone">رقم الهاتف</label>
+      <input type="tel" name="phone" id="phoneInput" placeholder="09XXXXXXXX" required>
+
+      <label id="labelEmail">البريد الإلكتروني</label>
+      <input type="email" name="email" id="emailInput" required>
+
+      <label id="labelPassword">كلمة المرور</label>
+      <input type="password" name="password" id="passwordInput" required>
+
+      <label id="labelConfirmPassword">إعادة كلمة المرور</label>
+      <input type="password" name="confirmPassword" id="confirmPasswordInput" required>
+
+      <div class="center" style="margin-top:20px">
+        <button class="btn" type="submit" style="width:100%" id="btnRegister">إنشاء الحساب</button>
+      </div>
+    </form>
+    <p class="center" style="margin-top:16px">
+      <span id="haveAccountText">لديك حساب بالفعل؟</span>
+      <a href="login.html" style="color:var(--gold-soft); font-weight:700" id="loginLink">تسجيل الدخول</a>
+    </p>
+  </div>
+</div>
+
+<div class="footer-note" id="footerText">وكالة الدواحي للسفر والسياحة — رحلتك تبدأ من هنا</div>
+
+<script src="theme.js"></script>
+<script src="auth.js"></script>
+<script>
+const TR = {
+  brand: {ar:'وكالة الدواحي ✦', en:'Dawahi Agency ✦'},
+  subBrand: {ar:'للسفر والسياحة', en:'Travel & Tourism'},
+  login: {ar:'تسجيل الدخول', en:'Login'},
+  welcome: {ar:'وكالة الدواحي للسفر والسياحة', en:'Dawahi Travel & Tourism Agency'},
+  titleRegister: {ar:'إنشاء حساب جديد', en:'Create New Account'},
+  fullname: {ar:'الاسم الثلاثي', en:'Full Name (3 parts)'},
+  phone: {ar:'رقم الهاتف', en:'Phone Number'},
+  email: {ar:'البريد الإلكتروني', en:'Email'},
+  password: {ar:'كلمة المرور', en:'Password'},
+  confirmPassword: {ar:'إعادة كلمة المرور', en:'Confirm Password'},
+  btnRegister: {ar:'إنشاء الحساب', en:'Create Account'},
+  haveAccount: {ar:'لديك حساب بالفعل؟', en:'Already have an account?'},
+  footer: {ar:'وكالة الدواحي للسفر والسياحة — رحلتك تبدأ من هنا', en:'Dawahi Travel & Tourism — Your journey starts here'},
+  errName: {ar:'يرجى كتابة الاسم الثلاثي كاملاً (ثلاث كلمات على الأقل)', en:'Please enter your full name (at least 3 parts)'},
+  errPhone: {ar:'رقم الهاتف غير صحيح', en:'Invalid phone number'},
+  errEmail: {ar:'البريد الإلكتروني غير صحيح', en:'Invalid email address'},
+  errPasswordShort: {ar:'كلمة المرور يجب ألا تقل عن 6 أحرف', en:'Password must be at least 6 characters'},
+  errPasswordMatch: {ar:'كلمة المرور وإعادة كلمة المرور غير متطابقتين', en:'Passwords do not match'},
+  errExists: {ar:'هذا البريد الإلكتروني مسجّل بالفعل، جرّب تسجيل الدخول', en:'This email is already registered, try logging in'},
+};
+
+let currentLang = 'ar';
+
+function setLang(lang) {
+  currentLang = lang;
+  const body = document.getElementById('pageBody');
+  const html = document.getElementById('htmlRoot');
+  body.classList.remove('lang-ar', 'lang-en');
+  body.classList.add('lang-' + lang);
+  html.setAttribute('lang', lang);
+  html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+
+  document.getElementById('brandText').childNodes[0].textContent = TR.brand[lang] + ' ';
+  document.getElementById('subBrandText').textContent = TR.subBrand[lang];
+  document.getElementById('loginNavLabel').textContent = TR.login[lang];
+  document.getElementById('titleRegister').textContent = TR.titleRegister[lang];
+  document.getElementById('welcomeText').textContent = TR.welcome[lang];
+  document.getElementById('labelFullname').textContent = TR.fullname[lang];
+  document.getElementById('labelPhone').textContent = TR.phone[lang];
+  document.getElementById('labelEmail').textContent = TR.email[lang];
+  document.getElementById('labelPassword').textContent = TR.password[lang];
+  document.getElementById('labelConfirmPassword').textContent = TR.confirmPassword[lang];
+  document.getElementById('btnRegister').textContent = TR.btnRegister[lang];
+  document.getElementById('haveAccountText').textContent = TR.haveAccount[lang];
+  document.getElementById('loginLink').textContent = TR.login[lang];
+  document.getElementById('footerText').textContent = TR.footer[lang];
+  document.getElementById('pageTitle').textContent = TR.titleRegister[lang] + ' - ' + TR.welcome[lang];
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  const form = e.target;
+  const flash = document.getElementById('flashMsg');
+  flash.className = 'flash error';
+
+  const result = doRegister(
+    form.fullname.value,
+    form.phone.value,
+    form.email.value,
+    form.password.value,
+    form.confirmPassword.value
+  );
+
+  if (!result.ok) {
+    const messages = {
+      name: TR.errName[currentLang],
+      phone: TR.errPhone[currentLang],
+      email: TR.errEmail[currentLang],
+      passwordShort: TR.errPasswordShort[currentLang],
+      passwordMatch: TR.errPasswordMatch[currentLang],
+      exists: TR.errExists[currentLang],
+    };
+    flash.textContent = messages[result.error] || messages.exists;
+    flash.style.display = 'block';
+    return false;
+  }
+
+  window.location.href = 'home.html';
+  return false;
+}
+</script>
+
+</body>
+</html>
